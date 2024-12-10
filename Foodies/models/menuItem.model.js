@@ -43,7 +43,7 @@ const menuItemSchema = new mongoose.Schema({
     spicyLevel: {
         type: Number,
         min: 0,
-        max: 3,
+        max: 5,
         default: 0
     },
     ingredients: [{
@@ -67,13 +67,6 @@ const menuItemSchema = new mongoose.Schema({
         type: Number,
         required: [true, 'Please provide preparation time in minutes']
     },
-    customization: [{
-        name: String,
-        options: [{
-            name: String,
-            price: Number
-        }]
-    }],
     ratings: {
         average: {
             type: Number,
