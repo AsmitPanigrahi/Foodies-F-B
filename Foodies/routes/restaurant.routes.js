@@ -2,6 +2,7 @@ const express = require('express');
 const restaurantController = require('../controllers/restaurant.controller');
 const authController = require('../controllers/auth.controller');
 const menuRoutes = require('./menu.routes');
+const upload = require('../middleware/upload.middleware');
 
 const router = express.Router();
 
@@ -15,6 +16,7 @@ router.use(authController.protect);
 // Restaurant owner routes
 router.post('/', 
     authController.restrictTo('restaurant-owner'),
+    upload.single('image'),  
     restaurantController.createRestaurant
 );
 

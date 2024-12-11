@@ -125,6 +125,12 @@ const RestaurantProfile = () => {
         ...prev,
         cuisine: cuisineArray
       }));
+    } else if (name === 'image') {
+      // Handle image upload
+      setFormData(prev => ({
+        ...prev,
+        image: URL.createObjectURL(e.target.files[0])
+      }));
     } else {
       setFormData(prev => ({
         ...prev,
@@ -172,6 +178,31 @@ const RestaurantProfile = () => {
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
           required
         />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700">Restaurant Image</label>
+        <input
+          type="file"
+          name="image"
+          accept="image/*"
+          onChange={handleInputChange}
+          className="mt-1 block w-full text-sm text-gray-500
+            file:mr-4 file:py-2 file:px-4
+            file:rounded-full file:border-0
+            file:text-sm file:font-semibold
+            file:bg-indigo-50 file:text-indigo-700
+            hover:file:bg-indigo-100"
+        />
+        {formData.image && (
+          <div className="mt-2">
+            <img
+              src={formData.image}
+              alt="Restaurant preview"
+              className="h-32 w-32 object-cover rounded-lg"
+            />
+          </div>
+        )}
       </div>
 
       <div>
@@ -360,6 +391,7 @@ const RestaurantProfile = () => {
                   hasDelivery: e.target.checked
                 }
               }))}
+
               className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
             />
             <label className="ml-2 text-sm text-gray-700">Delivery Available</label>
@@ -376,6 +408,7 @@ const RestaurantProfile = () => {
                   hasTableBooking: e.target.checked
                 }
               }))}
+
               className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
             />
             <label className="ml-2 text-sm text-gray-700">Table Booking</label>
@@ -392,6 +425,7 @@ const RestaurantProfile = () => {
                   hasTakeaway: e.target.checked
                 }
               }))}
+
               className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
             />
             <label className="ml-2 text-sm text-gray-700">Takeaway Available</label>

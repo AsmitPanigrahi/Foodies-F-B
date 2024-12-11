@@ -4,6 +4,7 @@ const AppError = require('../utils/appError');
 
 exports.createRestaurant = catchAsync(async (req, res, next) => {
     try {
+        console.log('Request body:', req.body);
         // Check if user already has a restaurant
         const existingRestaurant = await Restaurant.findOne({ owner: req.user._id });
         
@@ -56,6 +57,11 @@ exports.createRestaurant = catchAsync(async (req, res, next) => {
             if (invalidFeatures.length > 0) {
                 return next(new AppError(`Invalid features: ${invalidFeatures.join(', ')}`, 400));
             }
+        }
+
+        // Handle image upload
+        if (req.file) {
+            req.body.image = `/uploads/restaurants/${req.file.filename}`;
         }
 
         // Create the restaurant with owner field
