@@ -36,7 +36,7 @@ const RestaurantProfile = () => {
     email: '',
     preparationTime: 30,
     deliveryRadius: 5,
-    minimumOrder: 0,
+    minimumOrder: 1,
     features: {
       hasDelivery: true,
       hasTableBooking: false,
@@ -484,24 +484,6 @@ const RestaurantProfile = () => {
             <label className="ml-2 text-sm text-gray-700">Takeaway Available</label>
           </div>
         </div>
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-gray-700">Restaurant Images</label>
-        <input
-          type="text"
-          name="images"
-          value={formData.images.join(', ')}
-          onChange={(e) => {
-            const imagesArray = e.target.value.split(',').map(url => url.trim());
-            setFormData(prev => ({
-              ...prev,
-              images: imagesArray
-            }));
-          }}
-          placeholder="Enter image URLs separated by commas"
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-        />
       </div>
 
       <div className="flex justify-end space-x-3">
