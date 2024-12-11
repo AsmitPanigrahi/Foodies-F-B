@@ -22,7 +22,7 @@ const menuItemSchema = new mongoose.Schema({
     category: {
         type: String,
         required: [true, 'A menu item must have a category'],
-        enum: ['appetizer', 'main course', 'dessert', 'beverage', 'sides']
+        enum: ['Appetizers', 'Main Course', 'Desserts', 'Beverages', 'Sides', 'appetizer', 'main course', 'dessert', 'beverage', 'sides']
     },
     image: {
         type: String,
@@ -56,8 +56,7 @@ const menuItemSchema = new mongoose.Schema({
         calories: Number,
         protein: Number,
         carbohydrates: Number,
-        fats: Number,
-        fiber: Number
+        fats: Number
     },
     isAvailable: {
         type: Boolean,
@@ -66,18 +65,6 @@ const menuItemSchema = new mongoose.Schema({
     preparationTime: {
         type: Number,
         required: [true, 'Please provide preparation time in minutes']
-    },
-    ratings: {
-        average: {
-            type: Number,
-            default: 4.0,
-            min: [1, 'Rating must be above 1.0'],
-            max: [5, 'Rating must be below 5.0']
-        },
-        count: {
-            type: Number,
-            default: 0
-        }
     },
     isPopular: {
         type: Boolean,

@@ -5,9 +5,7 @@ export const menuAPI = {
   getItems: async (restaurantId) => {
     try {
       const endpoint = `/restaurants/${restaurantId}/menu`;
-      console.log('Making API request to:', endpoint);
       const response = await api.get(endpoint);
-      console.log('Menu API Response:', response);
       return response.data;
     } catch (error) {
       console.error('Error getting menu items:', {
@@ -25,9 +23,7 @@ export const menuAPI = {
   createItem: async (restaurantId, menuItemData) => {
     try {
       const endpoint = `/restaurants/${restaurantId}/menu`;
-      console.log('Making API request to:', endpoint);
       const response = await api.post(endpoint, menuItemData);
-      console.log('Menu API Response:', response);
       return response.data;
     } catch (error) {
       console.error('Error creating menu item:', {

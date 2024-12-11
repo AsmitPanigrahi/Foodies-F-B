@@ -14,9 +14,6 @@ import { loadStripe } from '@stripe/stripe-js';
 const STRIPE_PUBLISHABLE_KEY = 'pk_test_51QSD8jRp5AnEBBv1N7jgC1AjA5CT48u4aAFw8Dtb1QA2cD2xciyOTgxXUFQg8ntIHlWxn6IQeBpSUGZmP87GOOYC00a3SciAc6';
 const stripePromise = loadStripe(STRIPE_PUBLISHABLE_KEY);
 
-// For debugging
-console.log('Stripe Key:', STRIPE_PUBLISHABLE_KEY);
-
 const Checkout = () => {
   const navigate = useNavigate();
   const { cart, getTotal, clearCart, restaurantId } = useCart();

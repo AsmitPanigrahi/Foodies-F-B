@@ -45,15 +45,11 @@ const PaymentForm = ({ orderId, amount, onSuccess }) => {
       setProcessing(true);
       setError(null);
 
-      console.log('Creating payment intent with:', { amount: Math.round(amount * 100), orderId });
-
       // Create payment intent
       const response = await createPaymentIntent({
         amount: Math.round(amount * 100), // Convert to cents and ensure it's an integer
         orderId
       });
-
-      console.log('Payment intent response:', response);
 
       if (!response?.clientSecret) {
         throw new Error('Failed to create payment intent');

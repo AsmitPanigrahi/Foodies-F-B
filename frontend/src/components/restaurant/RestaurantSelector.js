@@ -15,11 +15,9 @@ const RestaurantSelector = ({ onRestaurantSelect }) => {
   const fetchRestaurants = async () => {
     try {
       const response = await getRestaurantDashboard();
-      console.log('Restaurant dashboard response:', response); // Debug log
       
       // Check if response has the restaurant data
       const restaurantData = response?.data?.restaurant ? [response.data.restaurant] : [];
-      console.log('Restaurant data:', restaurantData); // Debug log
       
       setRestaurants(restaurantData);
 
@@ -43,7 +41,6 @@ const RestaurantSelector = ({ onRestaurantSelect }) => {
 
   const handleRestaurantChange = (e) => {
     const restaurantId = e.target.value;
-    console.log('Restaurant selected:', restaurantId); // Debug log
     setSelectedRestaurant(restaurantId);
     onRestaurantSelect(restaurantId);
   };
