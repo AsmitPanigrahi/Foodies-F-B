@@ -166,6 +166,59 @@ const RestaurantProfile = () => {
     }
   };
 
+  const handleDelete = async () => {
+    if (!restaurant) return;
+
+    const confirmDelete = window.confirm('Are you sure you want to delete this restaurant?');
+    if (!confirmDelete) return;
+
+    try {
+      await restaurantAPI.delete(restaurant._id);
+      toast.success('Restaurant deleted successfully');
+      setRestaurant(null);
+      setFormData({
+        name: '',
+        description: '',
+        cuisine: [],
+        address: {
+          street: '',
+          city: '',
+          state: '',
+          zipCode: '',
+          country: ''
+        },
+        location: {
+          type: 'Point',
+          coordinates: [0, 0]
+        },
+        images: [],
+        priceRange: '$',
+        openingHours: {
+          monday: { open: '09:00', close: '22:00', closed: false },
+          tuesday: { open: '09:00', close: '22:00', closed: false },
+          wednesday: { open: '09:00', close: '22:00', closed: false },
+          thursday: { open: '09:00', close: '22:00', closed: false },
+          friday: { open: '09:00', close: '22:00', closed: false },
+          saturday: { open: '09:00', close: '22:00', closed: false },
+          sunday: { open: '09:00', close: '22:00', closed: false }
+        },
+        contactNumber: '',
+        email: '',
+        preparationTime: 30,
+        deliveryRadius: 5,
+        minimumOrder: 0,
+        features: {
+          hasDelivery: true,
+          hasTableBooking: false,
+          hasTakeaway: true
+        }
+      });
+    } catch (error) {
+      toast.error('Failed to delete restaurant. Please try again later.');
+      console.error('Error deleting restaurant:', error);
+    }
+  };
+
   const renderForm = () => (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div>
@@ -570,12 +623,20 @@ const RestaurantProfile = () => {
               {restaurant ? 'Restaurant Profile' : 'Create Restaurant'}
             </h2>
             {restaurant && !isEditing && (
-              <button
-                onClick={() => setIsEditing(true)}
-                className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
-              >
-                Edit Profile
-              </button>
+              <div className="flex justify-end space-x-4">
+                <button
+                  onClick={() => setIsEditing(true)}
+                  className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
+                >
+                  Edit Profile
+                </button>
+                <button
+                  onClick={handleDelete}
+                  className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+                >
+                  Delete Restaurant
+                </button>
+              </div>
             )}
           </div>
         </div>

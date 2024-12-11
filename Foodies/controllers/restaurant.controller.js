@@ -207,14 +207,6 @@ exports.deleteRestaurant = catchAsync(async (req, res, next) => {
         return next(new AppError('No restaurant found with that ID', 404));
     }
 
-    // Check if user is the owner or admin
-    if (
-        req.user.role !== 'admin' &&
-        restaurant.owner.toString() !== req.user._id.toString()
-    ) {
-        return next(new AppError('You can only delete your own restaurant', 403));
-    }
-
     await Restaurant.findByIdAndDelete(req.params.id);
 
     res.status(204).json({
