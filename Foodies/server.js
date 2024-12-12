@@ -12,6 +12,7 @@ const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
 const compression = require('compression');
+const path = require('path'); // Added path module
 
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./middleware/error.middleware');
@@ -82,6 +83,9 @@ app.use(hpp());
 
 // Compression
 app.use(compression());
+
+// Serve static files
+app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
 
 // Routes
 const authRoutes = require('./routes/auth.routes');

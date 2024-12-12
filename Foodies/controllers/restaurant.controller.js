@@ -1,6 +1,15 @@
 const Restaurant = require('../models/restaurant.model');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
+const path = require('path');
+const cloudinary = require('cloudinary').v2;
+
+// Configure Cloudinary
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+});
 
 exports.createRestaurant = catchAsync(async (req, res, next) => {
     try {
@@ -12,61 +21,80 @@ exports.createRestaurant = catchAsync(async (req, res, next) => {
             return next(new AppError('You already have a restaurant', 400));
         }
 
+        // Parse JSON strings in form data
+        const formData = { ...req.body };
+        
+        // Parse JSON fields if they are strings
+        ['cuisine', 'features', 'openingHours', 'address', 'location'].forEach(field => {
+            if (typeof formData[field] === 'string') {
+                try {
+                    formData[field] = JSON.parse(formData[field]);
+                } catch (e) {
+                    console.error(`Error parsing ${field}:`, e);
+                }
+            }
+        });
+
         // Validate required fields
         const requiredFields = ['name', 'cuisine', 'contactNumber', 'email', 'preparationTime', 'deliveryRadius', 'minimumOrder'];
-        const missingFields = requiredFields.filter(field => !req.body[field]);
+        const missingFields = requiredFields.filter(field => !formData[field]);
         
         if (missingFields.length > 0) {
             return next(new AppError(`Missing required fields: ${missingFields.join(', ')}`, 400));
         }
 
         // Validate address
-        if (!req.body.address || !req.body.address.street || !req.body.address.city || !req.body.address.state || !req.body.address.zipCode || !req.body.address.country) {
+        if (!formData.address || !formData.address.street || !formData.address.city || !formData.address.state || !formData.address.zipCode || !formData.address.country) {
             return next(new AppError('Please provide complete address information (street, city, state, zipCode, country)', 400));
         }
 
+        // Validate location
+        if (!formData.location || !formData.location.coordinates || !Array.isArray(formData.location.coordinates) || formData.location.coordinates.length !== 2) {
+            return next(new AppError('Please provide valid location coordinates [longitude, latitude]', 400));
+        }
+
         // Validate cuisine array
-        if (!Array.isArray(req.body.cuisine) || req.body.cuisine.length === 0) {
+        if (!Array.isArray(formData.cuisine) || formData.cuisine.length === 0) {
             return next(new AppError('Please provide at least one cuisine type', 400));
         }
 
         // Convert openingHours to a JSON string if it's an object
-        if (typeof req.body.openingHours === 'object') {
-            req.body.openingHours = JSON.stringify(req.body.openingHours);
+        if (typeof formData.openingHours === 'object') {
+            formData.openingHours = JSON.stringify(formData.openingHours);
         }
 
         // Ensure features is an array
-        if (req.body.features && !Array.isArray(req.body.features)) {
-            req.body.features = [req.body.features];
+        if (formData.features && !Array.isArray(formData.features)) {
+            formData.features = [formData.features];
         }
 
-        // Transform features to match the new schema
-        if (req.body.features) {
-            req.body.features = req.body.features.map(feature => ({
+        // Transform features to match the schema
+        if (formData.features) {
+            formData.features = formData.features.map(feature => ({
                 hasDelivery: feature.hasDelivery || false,
                 hasTableBooking: feature.hasTableBooking || false,
                 hasTakeaway: feature.hasTakeaway || false
             }));
         }
 
-        // Validate features if provided
-        if (req.body.features) {
-            const validFeatures = ['hasDelivery', 'hasTableBooking', 'hasTakeaway'];
-            const invalidFeatures = req.body.features.filter(feature => !validFeatures.includes(Object.keys(feature)[0]));
-            
-            if (invalidFeatures.length > 0) {
-                return next(new AppError(`Invalid features: ${invalidFeatures.join(', ')}`, 400));
-            }
-        }
-
-        // Handle image upload
+        // Handle image upload to Cloudinary
         if (req.file) {
-            req.body.image = `/uploads/restaurants/${req.file.filename}`;
+            try {
+                const result = await cloudinary.uploader.upload(req.file.path, {
+                    folder: 'restaurants',
+                    use_filename: true,
+                    unique_filename: true
+                });
+                formData.image = result.secure_url;
+            } catch (error) {
+                console.error('Cloudinary upload error:', error);
+                return next(new AppError('Error uploading image', 500));
+            }
         }
 
         // Create the restaurant with owner field
         const restaurant = await Restaurant.create({
-            ...req.body,
+            ...formData,
             owner: req.user._id
         });
 

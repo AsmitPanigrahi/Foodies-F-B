@@ -69,6 +69,8 @@ export const restaurantAPI = {
   update: (id, data) => api.patch(`/restaurants/${id}`, data),
   delete: (id) => api.delete(`/restaurants/${id}`),
   getMyRestaurant: () => api.get('/restaurants/me'),
+  create: (data, config = {}) => api.post('/restaurants', data, config),
+  update: (id, data, config = {}) => api.patch(`/restaurants/${id}`, data, config),
 };
 
 export const menuAPI = {
