@@ -205,23 +205,31 @@ exports.getRestaurant = catchAsync(async (req, res, next) => {
 
 exports.updateRestaurant = catchAsync(async (req, res, next) => {
     try {
-        // Convert openingHours to a JSON string if it's an object
-        if (typeof req.body.openingHours === 'object') {
-            req.body.openingHours = JSON.stringify(req.body.openingHours);
+        // First, find the restaurant
+        const existingRestaurant = await Restaurant.findById(req.params.id);
+        if (!existingRestaurant) {
+            return next(new AppError('No restaurant found with that ID', 404));
         }
 
-        // Ensure features is an array
-        if (req.body.features && !Array.isArray(req.body.features)) {
-            req.body.features = [req.body.features];
-        }
+        // Parse JSON fields if they are strings
+        const formData = { ...req.body };
+        ['cuisine', 'features', 'openingHours', 'address', 'location'].forEach(field => {
+            if (typeof formData[field] === 'string') {
+                try {
+                    formData[field] = JSON.parse(formData[field]);
+                } catch (e) {
+                    console.error(`Error parsing ${field}:`, e);
+                }
+            }
+        });
 
         // Transform features to match the schema
-        if (req.body.features) {
-            req.body.features = req.body.features.map(feature => ({
-                hasDelivery: feature.hasDelivery || false,
-                hasTableBooking: feature.hasTableBooking || false,
-                hasTakeaway: feature.hasTakeaway || false
-            }));
+        if (formData.features) {
+            formData.features = {
+                hasDelivery: formData.features.hasDelivery || false,
+                hasTableBooking: formData.features.hasTableBooking || false,
+                hasTakeaway: formData.features.hasTakeaway || false
+            };
         }
 
         // Handle image upload to Cloudinary if there's a new image
@@ -232,7 +240,7 @@ exports.updateRestaurant = catchAsync(async (req, res, next) => {
                     use_filename: true,
                     unique_filename: true
                 });
-                req.body.image = result.secure_url;
+                formData.image = result.secure_url;
 
                 // Remove the local file after successful upload
                 try {
@@ -253,18 +261,30 @@ exports.updateRestaurant = catchAsync(async (req, res, next) => {
             }
         }
 
-        const restaurant = await Restaurant.findByIdAndUpdate(req.params.id, req.body, {
-            new: true,
-            runValidators: true
-        });
-
-        if (!restaurant) {
-            return next(new AppError('No restaurant found with that ID', 404));
+        // Ensure location has proper coordinates
+        if (formData.location) {
+            formData.location = {
+                type: 'Point',
+                coordinates: formData.location.coordinates || [85.5072, 20.2961]
+            };
         }
+
+        // Update the restaurant with the processed data
+        const updatedRestaurant = await Restaurant.findByIdAndUpdate(
+            req.params.id,
+            formData,
+            {
+                new: true,
+                runValidators: true
+            }
+        );
+
+        // Log the update for debugging
+        console.log('Updated restaurant:', updatedRestaurant);
 
         res.status(200).json({
             status: 'success',
-            data: { restaurant }
+            data: { restaurant: updatedRestaurant }
         });
     } catch (error) {
         // If there's an error and we have a local file, try to clean it up

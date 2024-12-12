@@ -31,15 +31,16 @@ router.get('/me', restaurantController.getMyRestaurant);
 router.use('/:restaurantId/menu', menuRoutes);
 
 // Routes with :id parameter should come last
-router.get('/:id', restaurantController.getRestaurant);
 router
     .route('/:id')
+    .get(restaurantController.getRestaurant)
     .patch(
-        authController.restrictTo('restaurant-owner', 'admin'),
+        authController.restrictTo('restaurant-owner'),
+        upload.single('image'),
         restaurantController.updateRestaurant
     )
     .delete(
-        authController.restrictTo('restaurant-owner', 'admin'),
+        authController.restrictTo('restaurant-owner'),
         restaurantController.deleteRestaurant
     );
 

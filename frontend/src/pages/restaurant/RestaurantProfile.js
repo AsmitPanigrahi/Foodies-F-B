@@ -126,6 +126,7 @@ const RestaurantProfile = () => {
           }
         });
       }
+      setLoading(false);
     } catch (error) {
       if (error.response?.status === 404) {
         toast.error('You haven\'t created a restaurant profile yet. Please create one.');
@@ -606,13 +607,14 @@ const RestaurantProfile = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <h3 className="text-lg font-semibold mb-2">Basic Information</h3>
+            <p><strong>Name:</strong> {restaurant?.name}</p>
             <p><strong>Description:</strong> {restaurant?.description}</p>
             <p><strong>Cuisine:</strong> {restaurant?.cuisine?.join(', ') || 'Not specified'}</p>
             <p><strong>Price Range:</strong> {restaurant?.priceRange}</p>
             <p><strong>Contact:</strong> {restaurant?.contactNumber}</p>
             <p><strong>Email:</strong> {restaurant?.email}</p>
           </div>
-
+    
           <div>
             <h3 className="text-lg font-semibold mb-2">Location</h3>
             <p><strong>Address:</strong></p>
@@ -620,42 +622,45 @@ const RestaurantProfile = () => {
             <p>{restaurant?.address?.city}, {restaurant?.address?.state} {restaurant?.address?.zipCode}</p>
             <p>{restaurant?.address?.country}</p>
           </div>
-
+    
           <div>
             <h3 className="text-lg font-semibold mb-2">Business Details</h3>
             <p><strong>Preparation Time:</strong> {restaurant?.preparationTime} minutes</p>
             <p><strong>Delivery Radius:</strong> {restaurant?.deliveryRadius} km</p>
             <p><strong>Minimum Order:</strong> ${restaurant?.minimumOrder}</p>
           </div>
-
+    
           <div>
             <h3 className="text-lg font-semibold mb-2">Features</h3>
-            <ul>
-              {restaurant?.features?.hasDelivery && <li>✓ Delivery Available</li>}
-              {restaurant?.features?.hasTableBooking && <li>✓ Table Booking</li>}
-              {restaurant?.features?.hasTakeaway && <li>✓ Takeaway Available</li>}
+            <ul className="space-y-1">
+              <li className={restaurant?.features?.hasDelivery ? 'text-green-600' : 'text-gray-400'}>
+                {restaurant?.features?.hasDelivery ? '✓' : '✗'} Delivery Available
+              </li>
+              <li className={restaurant?.features?.hasTableBooking ? 'text-green-600' : 'text-gray-400'}>
+                {restaurant?.features?.hasTableBooking ? '✓' : '✗'} Table Booking
+              </li>
+              <li className={restaurant?.features?.hasTakeaway ? 'text-green-600' : 'text-gray-400'}>
+                {restaurant?.features?.hasTakeaway ? '✓' : '✗'} Takeaway Available
+              </li>
             </ul>
           </div>
         </div>
-
-        {restaurant?.images?.length > 0 && (
+    
+        {restaurant?.image && (
           <div>
-            <h3 className="text-lg font-semibold mb-2">Images</h3>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              {restaurant.images.map((image, index) => (
-                <img
-                  key={index}
-                  src={image}
-                  alt={`Restaurant ${index + 1}`}
-                  className="w-full h-48 object-cover rounded-lg"
-                />
-              ))}
+            <h3 className="text-lg font-semibold mb-2">Restaurant Image</h3>
+            <div className="mt-2">
+              <img
+                src={restaurant.image}
+                alt={restaurant.name}
+                className="w-full max-w-md h-64 object-cover rounded-lg shadow-md"
+              />
             </div>
           </div>
         )}
       </div>
     );
-  };
+  }; // Add this closing bracket
 
   if (loading) {
     return (
@@ -698,6 +703,6 @@ const RestaurantProfile = () => {
       </div>
     </div>
   );
-};
+}; // Component closing bracket
 
 export default RestaurantProfile;
