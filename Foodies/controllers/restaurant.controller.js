@@ -3,6 +3,7 @@ const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 const path = require('path');
 const cloudinary = require('cloudinary').v2;
+const fs = require('fs').promises;
 
 // Configure Cloudinary
 cloudinary.config({
@@ -86,7 +87,22 @@ exports.createRestaurant = catchAsync(async (req, res, next) => {
                     unique_filename: true
                 });
                 formData.image = result.secure_url;
+
+                // Remove the local file after successful upload
+                try {
+                    await fs.unlink(req.file.path);
+                    console.log('Successfully deleted local file');
+                } catch (unlinkError) {
+                    console.error('Error deleting local file:', unlinkError);
+                    // Don't throw error here, as the upload was successful
+                }
             } catch (error) {
+                // If Cloudinary upload fails, try to clean up the local file
+                try {
+                    await fs.unlink(req.file.path);
+                } catch (unlinkError) {
+                    console.error('Error deleting local file after failed upload:', unlinkError);
+                }
                 console.error('Cloudinary upload error:', error);
                 return next(new AppError('Error uploading image', 500));
             }
@@ -103,6 +119,14 @@ exports.createRestaurant = catchAsync(async (req, res, next) => {
             data: { restaurant }
         });
     } catch (error) {
+        // If there's an error and we have a local file, try to clean it up
+        if (req.file) {
+            try {
+                await fs.unlink(req.file.path);
+            } catch (unlinkError) {
+                console.error('Error deleting local file after error:', unlinkError);
+            }
+        }
         console.error('Restaurant creation error:', error);
         return next(new AppError(error.message || 'Error creating restaurant', 500));
     }
@@ -180,52 +204,80 @@ exports.getRestaurant = catchAsync(async (req, res, next) => {
 });
 
 exports.updateRestaurant = catchAsync(async (req, res, next) => {
-    // Convert openingHours to a JSON string if it's an object
-    if (typeof req.body.openingHours === 'object') {
-        req.body.openingHours = JSON.stringify(req.body.openingHours);
-    }
-
-    // Ensure features is an array
-    if (req.body.features && !Array.isArray(req.body.features)) {
-        req.body.features = [req.body.features];
-    }
-
-    // Transform features to match the new schema
-    if (req.body.features) {
-        req.body.features = req.body.features.map(feature => ({
-            hasDelivery: feature.hasDelivery || false,
-            hasTableBooking: feature.hasTableBooking || false,
-            hasTakeaway: feature.hasTakeaway || false
-        }));
-    }
-
-    // Validate features if provided
-    if (req.body.features) {
-        const validFeatures = ['hasDelivery', 'hasTableBooking', 'hasTakeaway'];
-        const invalidFeatures = req.body.features.filter(feature => !validFeatures.includes(Object.keys(feature)[0]));
-        
-        if (invalidFeatures.length > 0) {
-            return next(new AppError(`Invalid features: ${invalidFeatures.join(', ')}`, 400));
+    try {
+        // Convert openingHours to a JSON string if it's an object
+        if (typeof req.body.openingHours === 'object') {
+            req.body.openingHours = JSON.stringify(req.body.openingHours);
         }
-    }
 
-    const restaurant = await Restaurant.findByIdAndUpdate(
-        req.params.id,
-        req.body,
-        {
+        // Ensure features is an array
+        if (req.body.features && !Array.isArray(req.body.features)) {
+            req.body.features = [req.body.features];
+        }
+
+        // Transform features to match the schema
+        if (req.body.features) {
+            req.body.features = req.body.features.map(feature => ({
+                hasDelivery: feature.hasDelivery || false,
+                hasTableBooking: feature.hasTableBooking || false,
+                hasTakeaway: feature.hasTakeaway || false
+            }));
+        }
+
+        // Handle image upload to Cloudinary if there's a new image
+        if (req.file) {
+            try {
+                const result = await cloudinary.uploader.upload(req.file.path, {
+                    folder: 'restaurants',
+                    use_filename: true,
+                    unique_filename: true
+                });
+                req.body.image = result.secure_url;
+
+                // Remove the local file after successful upload
+                try {
+                    await fs.unlink(req.file.path);
+                    console.log('Successfully deleted local file');
+                } catch (unlinkError) {
+                    console.error('Error deleting local file:', unlinkError);
+                }
+            } catch (error) {
+                // If Cloudinary upload fails, try to clean up the local file
+                try {
+                    await fs.unlink(req.file.path);
+                } catch (unlinkError) {
+                    console.error('Error deleting local file after failed upload:', unlinkError);
+                }
+                console.error('Cloudinary upload error:', error);
+                return next(new AppError('Error uploading image', 500));
+            }
+        }
+
+        const restaurant = await Restaurant.findByIdAndUpdate(req.params.id, req.body, {
             new: true,
             runValidators: true
+        });
+
+        if (!restaurant) {
+            return next(new AppError('No restaurant found with that ID', 404));
         }
-    );
 
-    if (!restaurant) {
-        return next(new AppError('No restaurant found with that ID', 404));
+        res.status(200).json({
+            status: 'success',
+            data: { restaurant }
+        });
+    } catch (error) {
+        // If there's an error and we have a local file, try to clean it up
+        if (req.file) {
+            try {
+                await fs.unlink(req.file.path);
+            } catch (unlinkError) {
+                console.error('Error deleting local file after error:', unlinkError);
+            }
+        }
+        console.error('Restaurant update error:', error);
+        return next(new AppError(error.message || 'Error updating restaurant', 500));
     }
-
-    res.status(200).json({
-        status: 'success',
-        data: { restaurant }
-    });
 });
 
 exports.deleteRestaurant = catchAsync(async (req, res, next) => {
