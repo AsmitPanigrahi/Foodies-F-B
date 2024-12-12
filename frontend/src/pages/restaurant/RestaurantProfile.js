@@ -87,6 +87,11 @@ const RestaurantProfile = () => {
       const response = await restaurantAPI.getMyRestaurant();
       if (response.data && response.data.data && response.data.data.restaurant) {
         const restaurantData = response.data.data.restaurant;
+        
+        const featuresData = restaurantData.features && restaurantData.features.length > 0 
+        ? restaurantData.features[0] 
+        : { hasDelivery: false, hasTableBooking: false, hasTakeaway: false };
+
         setRestaurant(restaurantData);
         setFormData({
           name: restaurantData.name || '',
@@ -119,10 +124,10 @@ const RestaurantProfile = () => {
           preparationTime: restaurantData.preparationTime || 30,
           deliveryRadius: restaurantData.deliveryRadius || 5,
           minimumOrder: restaurantData.minimumOrder || 0,
-          features: restaurantData.features || {
-            hasDelivery: true,
-            hasTableBooking: false,
-            hasTakeaway: true
+          features: {
+            hasDelivery: featuresData.hasDelivery || true,
+            hasTableBooking: featuresData.hasTableBooking || false,
+            hasTakeaway: featuresData.hasTakeaway || true
           }
         });
       }
@@ -500,61 +505,58 @@ const RestaurantProfile = () => {
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700">Features</label>
-        <div className="mt-2 space-y-2">
-          <div className="flex items-center">
-            <input
-              type="checkbox"
-              name="features.hasDelivery"
-              checked={formData.features.hasDelivery}
-              onChange={(e) => setFormData(prev => ({
-                ...prev,
-                features: {
-                  ...prev.features,
-                  hasDelivery: e.target.checked
-                }
-              }))}
-
-              className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-            />
-            <label className="ml-2 text-sm text-gray-700">Delivery Available</label>
-          </div>
-          <div className="flex items-center">
-            <input
-              type="checkbox"
-              name="features.hasTableBooking"
-              checked={formData.features.hasTableBooking}
-              onChange={(e) => setFormData(prev => ({
-                ...prev,
-                features: {
-                  ...prev.features,
-                  hasTableBooking: e.target.checked
-                }
-              }))}
-
-              className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-            />
-            <label className="ml-2 text-sm text-gray-700">Table Booking</label>
-          </div>
-          <div className="flex items-center">
-            <input
-              type="checkbox"
-              name="features.hasTakeaway"
-              checked={formData.features.hasTakeaway}
-              onChange={(e) => setFormData(prev => ({
-                ...prev,
-                features: {
-                  ...prev.features,
-                  hasTakeaway: e.target.checked
-                }
-              }))}
-
-              className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-            />
-            <label className="ml-2 text-sm text-gray-700">Takeaway Available</label>
-          </div>
-        </div>
-      </div>
+  <label className="block text-sm font-medium text-gray-700">Features</label>
+  <div className="mt-2 space-y-2">
+    <div className="flex items-center">
+      <input
+        type="checkbox"
+        name="features.hasDelivery"
+        checked={formData.features?.hasDelivery || false}
+        onChange={(e) => setFormData(prev => ({
+          ...prev,
+          features: {
+            ...prev.features,
+            hasDelivery: e.target.checked
+          }
+        }))}
+        className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+      />
+      <label className="ml-2 text-sm text-gray-700">Delivery Available</label>
+    </div>
+    <div className="flex items-center">
+      <input
+        type="checkbox"
+        name="features.hasTableBooking"
+        checked={formData.features?.hasTableBooking || false}
+        onChange={(e) => setFormData(prev => ({
+          ...prev,
+          features: {
+            ...prev.features,
+            hasTableBooking: e.target.checked
+          }
+        }))}
+        className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+      />
+      <label className="ml-2 text-sm text-gray-700">Table Booking</label>
+    </div>
+    <div className="flex items-center">
+      <input
+        type="checkbox"
+        name="features.hasTakeaway"
+        checked={formData.features?.hasTakeaway || false}
+        onChange={(e) => setFormData(prev => ({
+          ...prev,
+          features: {
+            ...prev.features,
+            hasTakeaway: e.target.checked
+          }
+        }))}
+        className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+      />
+      <label className="ml-2 text-sm text-gray-700">Takeaway Available</label>
+    </div>
+  </div>
+</div>
 
       <div className="flex justify-end space-x-3">
         {isEditing && (
@@ -633,14 +635,14 @@ const RestaurantProfile = () => {
           <div>
             <h3 className="text-lg font-semibold mb-2">Features</h3>
             <ul className="space-y-1">
-              <li className={restaurant?.features?.hasDelivery ? 'text-green-600' : 'text-gray-400'}>
-                {restaurant?.features?.hasDelivery ? '✓' : '✗'} Delivery Available
+            <li className={restaurant?.features?.[0]?.hasDelivery ? 'text-green-600' : 'text-gray-400'}>
+                {restaurant?.features?.[0]?.hasDelivery ? '✓' : '✗'} Delivery Available
               </li>
-              <li className={restaurant?.features?.hasTableBooking ? 'text-green-600' : 'text-gray-400'}>
-                {restaurant?.features?.hasTableBooking ? '✓' : '✗'} Table Booking
+              <li className={restaurant?.features?.[0]?.hasTableBooking ? 'text-green-600' : 'text-gray-400'}>
+                {restaurant?.features?.[0]?.hasTableBooking ? '✓' : '✗'} Table Booking
               </li>
-              <li className={restaurant?.features?.hasTakeaway ? 'text-green-600' : 'text-gray-400'}>
-                {restaurant?.features?.hasTakeaway ? '✓' : '✗'} Takeaway Available
+              <li className={restaurant?.features?.[0]?.hasTakeaway ? 'text-green-600' : 'text-gray-400'}>
+                {restaurant?.features?.[0]?.hasTakeaway ? '✓' : '✗'} Takeaway Available
               </li>
             </ul>
           </div>
@@ -660,7 +662,7 @@ const RestaurantProfile = () => {
         )}
       </div>
     );
-  }; // Add this closing bracket
+  }; 
 
   if (loading) {
     return (
