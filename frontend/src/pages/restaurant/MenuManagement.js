@@ -63,47 +63,50 @@ const MenuManagement = () => {
     }
   };
 
-  const handleAddItem = async (formData) => {
+  const handleAddItem = async (menuItemData) => {
     if (!restaurantId) {
       toast.error('Please select a restaurant first');
       return;
     }
 
     try {
-      console.log('Adding menu item for restaurant:', restaurantId); // Debug log
-      console.log('Form data:', formData); // Debug log
-      const response = await menuAPI.createItem(restaurantId, formData);
+      console.log('MenuManagement: Adding menu item for restaurant:', restaurantId);
+      console.log('MenuManagement: Menu item data:', menuItemData);
       
-      if (response?.status === 'success') {
-        toast.success('Menu item added successfully');
-        setShowAddForm(false);
-        fetchMenuItems(); // Refresh the menu items list
-      }
+      // The menu item has already been created by the form
+      // Just update the UI
+      setShowAddForm(false);
+      console.log('MenuManagement: Refreshing menu items...');
+      await fetchMenuItems(); // Refresh the menu items list
     } catch (error) {
-      console.error('Error adding menu item:', error);
-      toast.error('Failed to add menu item');
+      console.error('MenuManagement: Error handling menu item:', {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status
+      });
     }
   };
 
-  const handleUpdateItem = async (itemId, formData) => {
+  const handleUpdateItem = async (menuItemData) => {
     if (!restaurantId) {
       toast.error('Please select a restaurant first');
       return;
     }
 
     try {
-      console.log('Updating menu item:', itemId, 'for restaurant:', restaurantId); // Debug log
-      console.log('Update form data:', formData); // Debug log
-      const response = await menuAPI.updateItem(restaurantId, itemId, formData);
+      console.log('MenuManagement: Updated menu item data:', menuItemData);
       
-      if (response?.status === 'success') {
-        toast.success('Menu item updated successfully');
-        setEditingItem(null);
-        fetchMenuItems(); // Refresh the menu items list
-      }
+      // The menu item has already been updated by the form
+      // Just update the UI
+      setEditingItem(null);
+      console.log('MenuManagement: Refreshing menu items...');
+      await fetchMenuItems(); // Refresh the menu items list
     } catch (error) {
-      console.error('Error updating menu item:', error);
-      toast.error('Failed to update menu item');
+      console.error('MenuManagement: Error handling menu item update:', {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status
+      });
     }
   };
 
@@ -196,7 +199,7 @@ const MenuManagement = () => {
                   {editingItem === item._id ? (
                     <MenuForm
                       initialData={item}
-                      onSubmit={(formData) => handleUpdateItem(item._id, formData)}
+                      onSubmit={(formData) => handleUpdateItem(formData)}
                       onCancel={() => setEditingItem(null)}
                       restaurantId={restaurantId}
                       editingItem={item._id}

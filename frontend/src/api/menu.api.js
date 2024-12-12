@@ -5,13 +5,22 @@ export const menuAPI = {
   getItems: async (restaurantId) => {
     try {
       const endpoint = `/restaurants/${restaurantId}/menu`;
+      console.log('Menu API: Getting items at endpoint:', endpoint);
       const response = await api.get(endpoint);
-      return response.data;
+      console.log('Menu API: Raw response:', response);
+      
+      if (response.data) {
+        console.log('Menu API: Processed response:', response.data);
+        return response.data;
+      } else {
+        console.warn('Menu API: No data in response');
+        throw new Error('No data received from server');
+      }
     } catch (error) {
-      console.error('Error getting menu items:', {
+      console.error('Menu API: Error getting menu items:', {
         message: error.message,
+        response: error.response?.data,
         status: error.response?.status,
-        data: error.response?.data,
         endpoint: `/restaurants/${restaurantId}/menu`,
         config: error.config
       });
@@ -23,13 +32,24 @@ export const menuAPI = {
   createItem: async (restaurantId, menuItemData) => {
     try {
       const endpoint = `/restaurants/${restaurantId}/menu`;
+      console.log('Menu API: Creating item at endpoint:', endpoint);
+      console.log('Menu API: Sending data:', menuItemData);
+      
       const response = await api.post(endpoint, menuItemData);
-      return response.data;
+      console.log('Menu API: Raw response:', response);
+      
+      if (response.data) {
+        console.log('Menu API: Processed response:', response.data);
+        return response.data;
+      } else {
+        console.warn('Menu API: No data in response');
+        throw new Error('No data received from server');
+      }
     } catch (error) {
-      console.error('Error creating menu item:', {
+      console.error('Menu API: Error creating menu item:', {
         message: error.message,
+        response: error.response?.data,
         status: error.response?.status,
-        data: error.response?.data,
         endpoint: `/restaurants/${restaurantId}/menu`,
         config: error.config
       });
@@ -41,15 +61,24 @@ export const menuAPI = {
   updateItem: async (restaurantId, itemId, menuItemData) => {
     try {
       const endpoint = `/restaurants/${restaurantId}/menu/${itemId}`;
-      console.log('Making API request to:', endpoint);
+      console.log('Menu API: Updating item at endpoint:', endpoint);
+      console.log('Menu API: Sending data:', menuItemData);
+      
       const response = await api.put(endpoint, menuItemData);
-      console.log('Menu API Response:', response);
-      return response.data;
+      console.log('Menu API: Raw response:', response);
+      
+      if (response.data) {
+        console.log('Menu API: Processed response:', response.data);
+        return response.data;
+      } else {
+        console.warn('Menu API: No data in response');
+        throw new Error('No data received from server');
+      }
     } catch (error) {
-      console.error('Error updating menu item:', {
+      console.error('Menu API: Error updating menu item:', {
         message: error.message,
+        response: error.response?.data,
         status: error.response?.status,
-        data: error.response?.data,
         endpoint: `/restaurants/${restaurantId}/menu/${itemId}`,
         config: error.config
       });
@@ -61,15 +90,23 @@ export const menuAPI = {
   deleteItem: async (restaurantId, itemId) => {
     try {
       const endpoint = `/restaurants/${restaurantId}/menu/${itemId}`;
-      console.log('Making API request to:', endpoint);
+      console.log('Menu API: Deleting item at endpoint:', endpoint);
+      
       const response = await api.delete(endpoint);
-      console.log('Menu API Response:', response);
-      return response.data;
+      console.log('Menu API: Raw response:', response);
+      
+      if (response.data) {
+        console.log('Menu API: Processed response:', response.data);
+        return response.data;
+      } else {
+        console.warn('Menu API: No data in response');
+        throw new Error('No data received from server');
+      }
     } catch (error) {
-      console.error('Error deleting menu item:', {
+      console.error('Menu API: Error deleting menu item:', {
         message: error.message,
+        response: error.response?.data,
         status: error.response?.status,
-        data: error.response?.data,
         endpoint: `/restaurants/${restaurantId}/menu/${itemId}`,
         config: error.config
       });
