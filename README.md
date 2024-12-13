@@ -30,14 +30,8 @@ Foodies also prioritizes security, with features like JWT-based user authenticat
   - multer: Middleware for handling file uploads, enabling users to upload images and other files.
   - compression: Middleware to compress response bodies, improving the performance of the application.
   - nodemon: A development tool that automatically restarts the server when file changes are detected, enhancing the development workflow.
+  - stripe: A library for handling payments, allowing users to make secure online payments for their orders.
 
-## Features
-- User authentication with secure JWT tokens.
-- Media management using Cloudinary for efficient image handling.
-- Responsive design for optimal viewing on all devices.
-- Secure API endpoints with Express and Helmet.
-- Integration with MongoDB for data storage and retrieval.
-- User-friendly interface with Tailwind CSS for styling.
 
 ## Deployment
 
