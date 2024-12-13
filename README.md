@@ -42,15 +42,15 @@ Foodies also prioritizes security, with features like JWT-based user authenticat
 ## Website Images
 
 ### Add New Item Form
-![Add New Item Form](Images/Add New Item Form.png)
+![Add New Item Form](Images/Add%20New%20Item%20Form.png)
 Description: A form for adding new items to the menu.
 
 ### Add Restaurant
-![Add Restaurant](Images/Add Restaurant.png)
+![Add Restaurant](Images/Add%20Restaurant.png)
 Description: Interface for adding a new restaurant to the system.
 
 ### All Restaurants
-![All restaurants](Images/All restaurants.png)
+![All restaurants](Images/All%20restaurants.png)
 Description: A page displaying all registered restaurants.
 
 ### Cart
@@ -62,27 +62,27 @@ Description: The shopping cart page where users can view selected items.
 Description: The checkout page for finalizing purchases.
 
 ### Customer Orders Page
-![Customer Orders Page](Images/Customer Orders Page.png)
+![Customer Orders Page](Images/Customer%20Orders%20Page.png)
 Description: A page displaying customer orders.
 
 ### Filter by Category
-![Filter by Category](Images/Filter by Category.png)
+![Filter by Category](Images/Filter%20by%20Category.png)
 Description: Allows users to filter menu items by category.
 
 ### Item Details Owner
-![Item Details Owner](Images/Item Details Owner.png)
+![Item Details Owner](Images/Item%20Details%20Owner.png)
 Description: Detailed view of an item for the owner.
 
 ### Menu Item Details
-![Menu Item Details](Images/Menu Item Details.png)
+![Menu Item Details](Images/Menu%20Item%20Details.png)
 Description: Detailed view of menu items.
 
 ### New Owner
-![New Owner](Images/New Owner.png)
+![New Owner](Images/New%20Owner.png)
 Description: Interface for adding a new restaurant owner.
 
 ### Order Management
-![Order Management](Images/Order Management.png)
+![Order Management](Images/Order%20Management.png)
 Description: Page for managing orders.
 
 ### Payment
@@ -94,27 +94,27 @@ Description: Payment processing interface.
 Description: Registration page for new users.
 
 ### Restaurant Owner Menu Management
-![Restaurant Owner Menu Management](Images/Restaurant Owner Menu Management.png)
+![Restaurant Owner Menu Management](Images/Restaurant%20Owner%20Menu%20Management.png)
 Description: Management interface for restaurant owners.
 
 ### Restaurant Owner Dashboard
-![Restaurant Owner dashboard](Images/Restaurant Owner dashboard.png)
+![Restaurant Owner dashboard](Images/Restaurant%20Owner%20dashboard.png)
 Description: Dashboard for restaurant owners to manage their information.
 
 ### Restaurant Page
-![Restaurant Page](Images/Restaurant Page.png)
+![Restaurant Page](Images/Restaurant%20Page.png)
 Description: Page displaying details of a specific restaurant.
 
 ### Restaurant Profile
-![Restaurant Profile](Images/Restaurant Profile.png)
+![Restaurant Profile](Images/Restaurant%20Profile.png)
 Description: Profile page for a restaurant.
 
 ### Update Item
-![Update Item](Images/Update Item.png)
+![Update Item](Images/Update%20Item.png)
 Description: Interface for updating menu items.
 
 ### Home Page
-![Home Page](Images/home page.png)
+![Home Page](Images/home%20page.png)
 Description: The main landing page of the website.
 
 ### Login
