@@ -114,14 +114,6 @@ Description: The main landing page of the website.
 ![Login](Images/login.png)
 Description: User login page.
 
-### Add New Item Form
-![Add New Item Form](Images/Add%20New%20Item%20Form.png)
-
-### Add Restaurant
-![Add Restaurant](Images/Add%20Restaurant.png)
-
-### Update Item
-![Update Item](Images/Update%20Item.png)
 
 ## Installation
 
