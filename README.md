@@ -1,7 +1,11 @@
 # Foodies - Food Delivery Application
 
 ## Overview
-Foodies is a full-stack food delivery application that allows users to browse, order, and manage food deliveries seamlessly. Built with modern web technologies, this application provides a responsive and user-friendly interface.
+Foodies is a comprehensive food delivery application designed to provide users with a seamless and enjoyable experience when browsing, ordering, and managing food deliveries. The application leverages modern web technologies to offer a responsive and user-friendly interface that works flawlessly across various devices. Whether you're craving a quick snack or planning a full-course meal, Foodies makes it easy to find and order your favorite dishes from local restaurants.
+
+The application features a robust backend built with Node.js and Express, ensuring secure and efficient handling of user data and orders. With MongoDB as the database, Foodies can store and retrieve data quickly and reliably. The frontend, developed using React and Tailwind CSS, provides a visually appealing and intuitive user interface. Additionally, the integration of Cloudinary allows for efficient media management, ensuring that images and other media files are handled seamlessly.
+
+Foodies also prioritizes security, with features like JWT-based user authentication, input sanitization, and secure HTTP headers. The application is designed to be scalable and maintainable, making it a reliable choice for both users and developers.
 
 ## Tech Stack
 - **Frontend:**
@@ -11,21 +15,14 @@ Foodies is a full-stack food delivery application that allows users to browse, o
   - React Hot Toast: A library for displaying notifications and alerts in the application.
   - React Icons: A library for incorporating a wide range of icons in your components.
   - Tailwind CSS: A utility-first CSS framework for quickly styling the application with predefined classes.
-  - @testing-library/react: A library for testing React components, ensuring they behave as expected.
-  - @testing-library/jest-dom: Provides custom matchers for Jest, enhancing the testing capabilities for DOM nodes.
-  - PostCSS: A tool for transforming CSS with JavaScript plugins, enabling features like autoprefixing and future CSS syntax.
-  - Autoprefixer: A PostCSS plugin that adds vendor prefixes to CSS rules, ensuring compatibility across different browsers.
-  - @babel/plugin-proposal-private-property-in-object: A Babel plugin that supports the use of private properties in objects, enabling modern JavaScript features.
 
 - **Backend:**
-  - Express: A web application framework for Node.js, providing a robust set of features for building web and mobile applications.
-  - Mongoose: An ODM (Object Data Modeling) library for MongoDB and Node.js, providing a straightforward way to model application data.
+  - Express: A web application framework for Node.js, providing a robust set of features for building web applications.
+  - Mongoose: An Object Data Modeling library for MongoDB, providing a straightforward way to model application data.
   - MongoDB: A NoSQL database used for storing application data, offering flexibility and scalability.
   - jsonwebtoken: A library for creating and verifying JSON Web Tokens (JWT), used for secure user authentication.
   - Cloudinary: A cloud-based service for managing and storing media files, offering features like image optimization and transformation.
   - Helmet: A middleware that helps secure Express apps by setting various HTTP headers, protecting against common web vulnerabilities.
-  - xss-clean: Middleware to sanitize user input and prevent cross-site scripting (XSS) attacks.
-  - express-rate-limit: Middleware for basic rate-limiting, protecting the application from brute-force attacks.
   - cors: Middleware to enable Cross-Origin Resource Sharing, allowing the frontend to communicate with the backend.
   - bcryptjs: A library for hashing and securing passwords, ensuring user credentials are stored securely.
   - dotenv: A module for loading environment variables from a `.env` file, keeping sensitive configuration out of the codebase.
@@ -50,8 +47,7 @@ Foodies is a full-stack food delivery application that allows users to browse, o
 
 ### Clone the Repository
 ```bash
-git clone https://github.com/yourusername/foodies.git
-cd foodies
+git clone https://github.com/AsmitPanigrahi/Foodies-F-B.git
 ```
 
 ### Frontend Setup
@@ -63,6 +59,7 @@ cd foodies
    ```bash
    npm install
    ```
+3. Create a `.env` file in the frontend directory and add your environment variables (e.g., API URL, Stripe Publishable key, JWT SECRET and Cloudinary credentials)
 
 ### Backend Setup
 1. Navigate to the backend directory:
@@ -73,7 +70,7 @@ cd foodies
    ```bash
    npm install
    ```
-3. Create a `.env` file in the backend directory and add your environment variables (e.g., MongoDB URI, Cloudinary credentials).
+3. Create a `.env` file in the backend directory and add your environment variables (e.g., MongoDB URI, Frontend URL, JWT SECRET, Stripe Secret key, Cloudinary credentials).
 
 ### Running the Application
 1. Start the backend server:
@@ -83,18 +80,9 @@ cd foodies
 2. Start the frontend application:
    ```bash
    cd frontend
-   npm start
+   npm run dev
    ```
 
 ## Usage
 - Access the application in your browser at `http://localhost:3000`.
 - Register or log in to start ordering food.
-
-## Contributing
-Contributions are welcome! Please fork the repository and submit a pull request for any improvements or features.
-
-## License
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Acknowledgments
-- Thanks to the open-source community for providing the tools and libraries that made this project possible.
