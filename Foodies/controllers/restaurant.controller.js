@@ -205,10 +205,23 @@ exports.getRestaurant = catchAsync(async (req, res, next) => {
 
 exports.updateRestaurant = catchAsync(async (req, res, next) => {
     try {
-        // First, find the restaurant
+        // First, find the restaurant and populate owner
         const existingRestaurant = await Restaurant.findById(req.params.id);
+        console.log('Found restaurant:', existingRestaurant);
+        console.log('Current user:', req.user);
+        
         if (!existingRestaurant) {
             return next(new AppError('No restaurant found with that ID', 404));
+        }
+
+        // Check if the current user owns this restaurant
+        const restaurantOwnerId = existingRestaurant.owner._id || existingRestaurant.owner;
+        if (restaurantOwnerId.toString() !== req.user._id.toString()) {
+            console.log('Ownership mismatch:', {
+                restaurantOwner: restaurantOwnerId.toString(),
+                currentUser: req.user._id.toString()
+            });
+            return next(new AppError('You do not have permission to update this restaurant', 403));
         }
 
         // Parse JSON fields if they are strings

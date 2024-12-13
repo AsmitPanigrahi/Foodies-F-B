@@ -101,6 +101,8 @@ exports.logout = (req, res) => {
 exports.protect = catchAsync(async (req, res, next) => {
     let token;
     
+    console.log('Authorization header:', req.headers.authorization);
+    
     if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
         token = req.headers.authorization.split(' ')[1];
     } else if (req.cookies.jwt) {
@@ -112,22 +114,33 @@ exports.protect = catchAsync(async (req, res, next) => {
     }
 
     try {
+        console.log('Verifying token:', token);
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        console.log('Decoded token:', decoded);
+        
         const user = await User.findById(decoded.id);
+        console.log('Found user:', user);
 
         if (!user) {
             return next(new AppError('The user belonging to this token no longer exists.', 401));
         }
 
         req.user = user;
+        console.log('User role:', user.role);
         next();
     } catch (error) {
+        console.error('Token verification error:', error);
         return next(new AppError('Invalid token. Please log in again.', 401));
     }
 });
 
 exports.restrictTo = (...roles) => {
     return (req, res, next) => {
+        console.log('Checking roles:', {
+            required: roles,
+            userRole: req.user?.role
+        });
+        
         if (!roles.includes(req.user.role)) {
             return next(new AppError('You do not have permission to perform this action', 403));
         }
