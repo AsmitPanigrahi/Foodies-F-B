@@ -14,7 +14,6 @@ cloudinary.config({
 
 exports.createRestaurant = catchAsync(async (req, res, next) => {
     try {
-        console.log('Request body:', req.body);
         // Check if user already has a restaurant
         const existingRestaurant = await Restaurant.findOne({ owner: req.user._id });
         
@@ -91,7 +90,6 @@ exports.createRestaurant = catchAsync(async (req, res, next) => {
                 // Remove the local file after successful upload
                 try {
                     await fs.unlink(req.file.path);
-                    console.log('Successfully deleted local file');
                 } catch (unlinkError) {
                     console.error('Error deleting local file:', unlinkError);
                     // Don't throw error here, as the upload was successful
@@ -207,8 +205,6 @@ exports.updateRestaurant = catchAsync(async (req, res, next) => {
     try {
         // First, find the restaurant and populate owner
         const existingRestaurant = await Restaurant.findById(req.params.id);
-        console.log('Found restaurant:', existingRestaurant);
-        console.log('Current user:', req.user);
         
         if (!existingRestaurant) {
             return next(new AppError('No restaurant found with that ID', 404));
@@ -217,10 +213,6 @@ exports.updateRestaurant = catchAsync(async (req, res, next) => {
         // Check if the current user owns this restaurant
         const restaurantOwnerId = existingRestaurant.owner._id || existingRestaurant.owner;
         if (restaurantOwnerId.toString() !== req.user._id.toString()) {
-            console.log('Ownership mismatch:', {
-                restaurantOwner: restaurantOwnerId.toString(),
-                currentUser: req.user._id.toString()
-            });
             return next(new AppError('You do not have permission to update this restaurant', 403));
         }
 
@@ -258,7 +250,6 @@ exports.updateRestaurant = catchAsync(async (req, res, next) => {
                 // Remove the local file after successful upload
                 try {
                     await fs.unlink(req.file.path);
-                    console.log('Successfully deleted local file');
                 } catch (unlinkError) {
                     console.error('Error deleting local file:', unlinkError);
                 }
@@ -291,9 +282,6 @@ exports.updateRestaurant = catchAsync(async (req, res, next) => {
                 runValidators: true
             }
         );
-
-        // Log the update for debugging
-        console.log('Updated restaurant:', updatedRestaurant);
 
         res.status(200).json({
             status: 'success',

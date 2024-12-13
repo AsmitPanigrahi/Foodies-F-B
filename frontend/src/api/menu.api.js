@@ -5,12 +5,12 @@ export const menuAPI = {
   getItems: async (restaurantId) => {
     try {
       const endpoint = `/restaurants/${restaurantId}/menu`;
-      console.log('Menu API: Getting items at endpoint:', endpoint);
+     
       const response = await api.get(endpoint);
-      console.log('Menu API: Raw response:', response);
+      
       
       if (response.data) {
-        console.log('Menu API: Processed response:', response.data);
+       
         return response.data;
       } else {
         console.warn('Menu API: No data in response');
@@ -32,14 +32,11 @@ export const menuAPI = {
   createItem: async (restaurantId, menuItemData) => {
     try {
       const endpoint = `/restaurants/${restaurantId}/menu`;
-      console.log('Menu API: Creating item at endpoint:', endpoint);
-      console.log('Menu API: Sending data:', menuItemData);
+      
       
       const response = await api.post(endpoint, menuItemData);
-      console.log('Menu API: Raw response:', response);
       
       if (response.data) {
-        console.log('Menu API: Processed response:', response.data);
         return response.data;
       } else {
         console.warn('Menu API: No data in response');
@@ -65,14 +62,10 @@ export const menuAPI = {
       }
       
       const endpoint = `/restaurants/${restaurantId}/menu/${itemId}`;
-      console.log('Menu API: Updating item at endpoint:', endpoint);
-      console.log('Menu API: Sending data:', menuItemData);
       
       const response = await api.patch(endpoint, menuItemData);
-      console.log('Menu API: Raw response:', response);
       
       if (response.data) {
-        console.log('Menu API: Processed response:', response.data);
         return response.data;
       }
       
@@ -98,10 +91,8 @@ export const menuAPI = {
   deleteItem: async (restaurantId, itemId) => {
     try {
       const endpoint = `/restaurants/${restaurantId}/menu/${itemId}`;
-      console.log('Menu API: Deleting item at endpoint:', endpoint);
       
       const response = await api.delete(endpoint);
-      console.log('Menu API: Raw response:', response);
       
       // For DELETE requests, a 204 response is success with no content
       if (response.status === 204) {
@@ -110,7 +101,6 @@ export const menuAPI = {
       
       // For other successful responses, return the data
       if (response.data) {
-        console.log('Menu API: Processed response:', response.data);
         return response.data;
       }
       

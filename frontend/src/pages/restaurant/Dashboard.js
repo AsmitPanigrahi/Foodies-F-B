@@ -67,7 +67,6 @@ const Dashboard = () => {
 
       // Fetch menu items using restaurant ID
       const menuRes = await menuAPI.getItems(restaurantId);
-      console.log('Menu response:', menuRes);
       // Use the results field for total menu items
       const totalMenuItems = menuRes?.results || 0;
 

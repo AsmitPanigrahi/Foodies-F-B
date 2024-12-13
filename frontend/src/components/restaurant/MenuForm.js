@@ -39,7 +39,6 @@ const MenuForm = ({ onSubmit, onCancel, initialData = null, restaurantId, editin
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Starting form submission with data:', formData);
     
     try {
       // Validate required fields
@@ -69,18 +68,12 @@ const MenuForm = ({ onSubmit, onCancel, initialData = null, restaurantId, editin
         restaurant: restaurantId
       };
 
-      console.log('Processed form data:', processedData);
-
       let response;
       if (editingItem && editingItem._id) {
-        console.log('Updating menu item:', editingItem._id);
         response = await menuAPI.updateItem(restaurantId, editingItem._id, processedData);
       } else {
-        console.log('Creating new menu item');
         response = await menuAPI.createItem(restaurantId, processedData);
       }
-
-      console.log('API Response:', response);
 
       if (response) {
         toast.success(editingItem ? 'Menu item updated successfully' : 'Menu item added successfully');

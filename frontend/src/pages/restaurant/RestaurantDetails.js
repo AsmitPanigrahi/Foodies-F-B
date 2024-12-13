@@ -40,18 +40,14 @@ const RestaurantDetails = () => {
             setLoading(true);
             setMenuLoading(true);
             setMenuError(null);
-            console.log('Fetching data for restaurant ID:', id);
             
             // First fetch restaurant details
             const restaurantRes = await getRestaurantById(id);
-            console.log('Restaurant response:', restaurantRes);
             setRestaurant(restaurantRes.data.restaurant);
             
             // Then fetch menu items using customer API
             try {
-                console.log('Fetching menu items for restaurant:', id);
                 const menuRes = await customerMenuAPI.getRestaurantMenu(id);
-                console.log('Menu response:', menuRes);
                 
                 // Check if menuRes.data is an array (backward compatibility)
                 const menuItems = Array.isArray(menuRes.data) 
@@ -128,26 +124,16 @@ const RestaurantDetails = () => {
                 paymentMethod: 'card'  // TODO: Get from user input
             };
 
-            console.log('Creating order with data:', orderRequestData);
-
             // Create order first
             const orderResponse = await orderAPI.create(orderRequestData);
-            console.log('Full order response:', orderResponse);
 
             const createdOrderData = orderResponse?.data?.data?.order;
-            console.log('Extracted order data:', createdOrderData);
 
             if (!createdOrderData?._id) {
                 console.error('Invalid order response structure:', orderResponse);
                 throw new Error('Invalid order response - missing order ID');
             }
-
-            // First set the order data
-            console.log('Setting created order with:', createdOrderData);
             setCreatedOrder(createdOrderData);
-            
-            // Then show the payment form
-            console.log('Showing payment form');
             setShowPaymentForm(true);
             
         } catch (error) {
@@ -157,7 +143,6 @@ const RestaurantDetails = () => {
     };
 
     const handlePaymentSuccess = async (paymentIntent) => {
-        console.log('Payment success with intent:', paymentIntent);
         toast.success('Order placed and payment processed successfully!');
         setCart([]); // Clear cart after successful order
         setShowPaymentForm(false);
@@ -166,7 +151,6 @@ const RestaurantDetails = () => {
 
     const handlePaymentCancel = async () => {
         if (createdOrder?._id) {
-            console.log('Cancelling order:', createdOrder._id);
             try {
                 await orderAPI.cancel(createdOrder._id);
                 toast.success('Order cancelled');
@@ -180,10 +164,8 @@ const RestaurantDetails = () => {
     };
 
     const renderPaymentForm = () => {
-        console.log('Rendering payment form. Order:', createdOrder, 'Show:', showPaymentForm);
         
         if (!showPaymentForm || !createdOrder) {
-            console.log('Conditions not met for payment form. showPaymentForm:', showPaymentForm, 'createdOrder:', createdOrder);
             return null;
         }
 

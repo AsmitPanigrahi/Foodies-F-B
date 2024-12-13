@@ -25,7 +25,6 @@ const RestaurantSelector = ({ onRestaurantSelect }) => {
       if (restaurantData.length === 1 && !hasAutoSelected.current) {
         const restaurant = restaurantData[0];
         const restaurantId = restaurant._id;
-        console.log('Auto-selecting restaurant:', { id: restaurantId, restaurant }); // Debug log
         setSelectedRestaurant(restaurantId);
         onRestaurantSelect(restaurantId);
         hasAutoSelected.current = true;

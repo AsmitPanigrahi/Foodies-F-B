@@ -78,9 +78,7 @@ const Checkout = () => {
         paymentMethod: 'card' // Required field
       };
 
-      console.log('Creating order with data:', orderData);
       const response = await orderAPI.create(orderData);
-      console.log('Order creation response:', response);
 
       if (!response?.data?.data?.order?._id) {
         console.error('Invalid order response structure:', response);

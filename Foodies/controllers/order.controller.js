@@ -233,11 +233,6 @@ exports.updateOrderStatus = catchAsync(async (req, res, next) => {
         }
 
         const savedOrder = await order.save();
-        console.log('Order updated successfully:', {
-            orderId: savedOrder._id,
-            newStatus: savedOrder.status,
-            paymentDetails: savedOrder.paymentDetails
-        });
 
         // Emit socket event for status update
         if (req.io) {

@@ -22,7 +22,6 @@ const PaymentForm = ({ orderId, amount, onSuccess }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Payment form submitted with orderId:', orderId, 'amount:', amount);
 
     if (!stripe || !elements) {
       console.error('Stripe.js has not loaded');
@@ -71,8 +70,6 @@ const PaymentForm = ({ orderId, amount, onSuccess }) => {
       if (stripeError) {
         throw new Error(stripeError.message);
       }
-
-      console.log('Payment confirmed:', paymentIntent);
 
       if (paymentIntent.status === 'succeeded') {
         toast.success('Payment successful!');

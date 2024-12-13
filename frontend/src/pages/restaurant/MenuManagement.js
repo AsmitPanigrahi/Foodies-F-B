@@ -17,7 +17,6 @@ const MenuManagement = () => {
 
   // Memoize the handleRestaurantSelect function to prevent unnecessary re-renders
   const handleRestaurantSelect = useCallback((id) => {
-    console.log('Restaurant selected in MenuManagement:', id);
     if (id) {
       setRestaurantId(id);
       // Don't clear menu items here, let the useEffect handle it
@@ -27,25 +26,20 @@ const MenuManagement = () => {
   // Fetch menu items when restaurantId changes
   useEffect(() => {
     if (restaurantId) {
-      console.log('Restaurant ID changed, fetching menu items for:', restaurantId);
       fetchMenuItems();
     }
   }, [restaurantId]); // Only depend on restaurantId
 
   const fetchMenuItems = async () => {
     if (!restaurantId) {
-      console.log('No restaurant ID provided, skipping fetch');
       return;
     }
     
     try {
       setLoading(true);
-      console.log('Fetching menu items for restaurant:', restaurantId);
       const response = await menuAPI.getItems(restaurantId);
-      console.log('Menu items response:', response);
       
       if (response?.status === 'success' && Array.isArray(response?.data?.menuItems)) {
-        console.log('Setting menu items:', response.data.menuItems);
         setMenuItems(response.data.menuItems);
       } else {
         console.warn('Unexpected response structure:', response);
@@ -71,13 +65,10 @@ const MenuManagement = () => {
     }
 
     try {
-      console.log('MenuManagement: Adding menu item for restaurant:', restaurantId);
-      console.log('MenuManagement: Menu item data:', menuItemData);
       
       // The menu item has already been created by the form
       // Just update the UI
       setShowAddForm(false);
-      console.log('MenuManagement: Refreshing menu items...');
       await fetchMenuItems(); // Refresh the menu items list
     } catch (error) {
       console.error('MenuManagement: Error handling menu item:', {
@@ -95,12 +86,10 @@ const MenuManagement = () => {
     }
 
     try {
-      console.log('MenuManagement: Updated menu item data:', menuItemData);
       
       // The menu item has already been updated by the form
       // Just update the UI
       setEditingItem(null);
-      console.log('MenuManagement: Refreshing menu items...');
       await fetchMenuItems(); // Refresh the menu items list
     } catch (error) {
       console.error('MenuManagement: Error handling menu item update:', {
@@ -113,7 +102,6 @@ const MenuManagement = () => {
 
   const handleDeleteItem = async (itemId) => {
     try {
-      console.log('Deleting menu item:', itemId, 'for restaurant:', restaurantId);
       await menuAPI.deleteItem(restaurantId, itemId);
       toast.success('Menu item deleted successfully');
       await fetchMenuItems(); // Refresh the menu items list
@@ -125,7 +113,6 @@ const MenuManagement = () => {
 
   // Memoize filteredMenuItems to prevent unnecessary recalculations
   const filteredMenuItems = useMemo(() => {
-    console.log('Filtering menu items:', { menuItems, selectedCategory });
     if (!Array.isArray(menuItems)) {
       console.warn('menuItems is not an array:', menuItems);
       return [];
@@ -210,25 +197,27 @@ const MenuManagement = () => {
                       <p className="text-sm text-gray-500 mb-4">
                         Category: {item.category || 'Uncategorized'}
                       </p>
-                      <div className="flex justify-end space-x-2">
+                      <div className="flex justify-between items-center space-x-2">
                         <button
                           onClick={() => setSelectedItem(item)}
                           className="text-indigo-500 hover:text-indigo-600"
                         >
                           More Info
                         </button>
-                        <button
-                          onClick={() => setEditingItem(item)}
-                          className="text-blue-500 hover:text-blue-600"
-                        >
-                          Edit
-                        </button>
-                        <button
-                          onClick={() => handleDeleteItem(item._id)}
-                          className="text-red-500 hover:text-red-600"
-                        >
-                          Delete
-                        </button>
+                        <div className="flex space-x-2">
+                          <button
+                            onClick={() => setEditingItem(item)}
+                            className="text-blue-500 hover:text-blue-600"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => handleDeleteItem(item._id)}
+                            className="text-red-500 hover:text-red-600"
+                          >
+                            Delete
+                          </button>
+                        </div>
                       </div>
                     </>
                   )}
