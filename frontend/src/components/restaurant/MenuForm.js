@@ -50,65 +50,47 @@ const MenuForm = ({ onSubmit, onCancel, initialData = null, restaurantId, editin
         preparationTime: 'Preparation Time'
       };
 
+      // Check for missing required fields
       const missingFields = Object.entries(requiredFields)
-        .filter(([field]) => !formData[field])
+        .filter(([key]) => !formData[key])
         .map(([, label]) => label);
 
       if (missingFields.length > 0) {
-        console.log('Missing fields:', missingFields);
-        throw new Error(`Please fill in the following required fields: ${missingFields.join(', ')}`);
+        toast.error(`Please fill in the following required fields: ${missingFields.join(', ')}`);
+        return;
       }
 
-      // Validate numeric fields
-      const price = parseFloat(formData.price);
-      const prepTime = parseInt(formData.preparationTime);
-
-      console.log('Parsed numeric values:', { price, prepTime });
-
-      if (isNaN(price) || price <= 0) {
-        throw new Error('Please enter a valid price');
-      }
-
-      if (isNaN(prepTime) || prepTime <= 0) {
-        throw new Error('Please enter a valid preparation time');
-      }
-
-      const formDataWithRestaurant = {
+      // Prepare form data
+      const processedData = {
         ...formData,
-        restaurant: restaurantId,
-        price: price,
-        preparationTime: prepTime
+        price: parseFloat(formData.price),
+        preparationTime: parseInt(formData.preparationTime),
+        discount: parseInt(formData.discount) || 0,
+        restaurant: restaurantId
       };
 
-      console.log('Submitting to API:', formDataWithRestaurant);
+      console.log('Processed form data:', processedData);
 
       let response;
-      if (editingItem) {
-        response = await menuAPI.updateItem(restaurantId, editingItem._id, formDataWithRestaurant);
-        console.log('Update API Response:', response);
+      if (editingItem && editingItem._id) {
+        console.log('Updating menu item:', editingItem._id);
+        response = await menuAPI.updateItem(restaurantId, editingItem._id, processedData);
       } else {
-        response = await menuAPI.createItem(restaurantId, formDataWithRestaurant);
-        console.log('Create API Response:', response);
+        console.log('Creating new menu item');
+        response = await menuAPI.createItem(restaurantId, processedData);
       }
 
       console.log('API Response:', response);
 
-      // Only proceed if we have a successful response
-      if (response?.status === 'success') {
-        console.log('Calling onSubmit with menu item data:', response.data);
-        onSubmit(response.data);
+      if (response) {
         toast.success(editingItem ? 'Menu item updated successfully' : 'Menu item added successfully');
-        resetForm();
-      } else {
-        throw new Error('Invalid response from server');
+        if (onSubmit) {
+          onSubmit(response.data || response);
+        }
       }
     } catch (error) {
-      console.error('Error details:', {
-        message: error.message,
-        response: error.response?.data,
-        status: error.response?.status
-      });
-      toast.error(error.message || error.response?.data?.message || 'Failed to save menu item');
+      console.error('Error submitting form:', error);
+      toast.error(error.response?.data?.message || 'Failed to save menu item');
     }
   };
 
@@ -116,37 +98,24 @@ const MenuForm = ({ onSubmit, onCancel, initialData = null, restaurantId, editin
     const { name, value, type, checked } = e.target;
     
     if (type === 'checkbox') {
+      setFormData(prev => ({ ...prev, [name]: checked }));
+    } else if (name.includes('.')) {
+      // Handle nested objects (e.g., nutritionalInfo.calories)
+      const [parent, child] = name.split('.');
       setFormData(prev => ({
         ...prev,
-        [name]: checked
+        [parent]: {
+          ...prev[parent],
+          [child]: value
+        }
       }));
     } else if (name === 'ingredients' || name === 'allergens') {
       setFormData(prev => ({
         ...prev,
         [name]: value.split(',').map(item => item.trim())
       }));
-    } else if (name.startsWith('nutritionalInfo.')) {
-      const nutritionField = name.split('.')[1];
-      setFormData(prev => ({
-        ...prev,
-        nutritionalInfo: {
-          ...prev.nutritionalInfo,
-          [nutritionField]: value
-        }
-      }));
-    } else if (name === 'discount.percentage') {
-      setFormData(prev => ({
-        ...prev,
-        discount: {
-          ...prev.discount,
-          percentage: Number(value)
-        }
-      }));
     } else {
-      setFormData(prev => ({
-        ...prev,
-        [name]: value
-      }));
+      setFormData(prev => ({ ...prev, [name]: value }));
     }
   };
 
@@ -431,28 +400,16 @@ const MenuForm = ({ onSubmit, onCancel, initialData = null, restaurantId, editin
           <h3 className="text-lg font-medium text-gray-900">Discount</h3>
           <div className="mt-2 flex items-center space-x-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700">Percentage</label>
+              <label className="block text-sm font-medium text-gray-700">Discount (%)</label>
               <input
                 type="number"
-                name="discount.percentage"
-                value={formData.discount.percentage}
+                name="discount"
+                value={formData.discount}
                 onChange={handleChange}
                 min="0"
                 max="100"
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
               />
-            </div>
-            <div className="flex items-center">
-              <label className="inline-flex items-center">
-                <input
-                  type="checkbox"
-                  name="discount.isActive"
-                  checked={formData.discount.isActive}
-                  onChange={handleChange}
-                  className="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                />
-                <span className="ml-2">Active</span>
-              </label>
             </div>
           </div>
         </div>

@@ -112,16 +112,13 @@ const MenuManagement = () => {
 
   const handleDeleteItem = async (itemId) => {
     try {
-      console.log('Deleting menu item:', itemId, 'for restaurant:', restaurantId); // Debug log
-      const response = await menuAPI.deleteItem(restaurantId, itemId);
-      console.log('Delete response:', response); // Debug log
-      if (response?.status === 'success') {
-        toast.success('Menu item deleted successfully');
-        fetchMenuItems();
-      }
+      console.log('Deleting menu item:', itemId, 'for restaurant:', restaurantId);
+      await menuAPI.deleteItem(restaurantId, itemId);
+      toast.success('Menu item deleted successfully');
+      await fetchMenuItems(); // Refresh the menu items list
     } catch (error) {
       console.error('Error deleting menu item:', error);
-      toast.error('Failed to delete menu item');
+      toast.error(error.response?.data?.message || 'Failed to delete menu item');
     }
   };
 
@@ -196,13 +193,13 @@ const MenuManagement = () => {
                   key={item._id}
                   className="bg-white rounded-lg shadow-md p-6"
                 >
-                  {editingItem === item._id ? (
+                  {editingItem && editingItem._id === item._id ? (
                     <MenuForm
                       initialData={item}
-                      onSubmit={(formData) => handleUpdateItem(formData)}
+                      onSubmit={handleUpdateItem}
                       onCancel={() => setEditingItem(null)}
                       restaurantId={restaurantId}
-                      editingItem={item._id}
+                      editingItem={item}
                     />
                   ) : (
                     <>
@@ -214,7 +211,7 @@ const MenuManagement = () => {
                       </p>
                       <div className="flex justify-end space-x-2">
                         <button
-                          onClick={() => setEditingItem(item._id)}
+                          onClick={() => setEditingItem(item)}
                           className="text-blue-500 hover:text-blue-600"
                         >
                           Edit

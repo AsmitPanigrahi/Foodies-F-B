@@ -60,20 +60,28 @@ export const menuAPI = {
   // Update a menu item
   updateItem: async (restaurantId, itemId, menuItemData) => {
     try {
+      if (!itemId) {
+        throw new Error('Menu item ID is required for update');
+      }
+      
       const endpoint = `/restaurants/${restaurantId}/menu/${itemId}`;
       console.log('Menu API: Updating item at endpoint:', endpoint);
       console.log('Menu API: Sending data:', menuItemData);
       
-      const response = await api.put(endpoint, menuItemData);
+      const response = await api.patch(endpoint, menuItemData);
       console.log('Menu API: Raw response:', response);
       
       if (response.data) {
         console.log('Menu API: Processed response:', response.data);
         return response.data;
-      } else {
-        console.warn('Menu API: No data in response');
-        throw new Error('No data received from server');
       }
+      
+      // If no data but successful status, return success
+      if (response.status >= 200 && response.status < 300) {
+        return { status: 'success' };
+      }
+      
+      throw new Error('Unexpected response from server');
     } catch (error) {
       console.error('Menu API: Error updating menu item:', {
         message: error.message,
@@ -95,13 +103,18 @@ export const menuAPI = {
       const response = await api.delete(endpoint);
       console.log('Menu API: Raw response:', response);
       
+      // For DELETE requests, a 204 response is success with no content
+      if (response.status === 204) {
+        return { status: 'success' };
+      }
+      
+      // For other successful responses, return the data
       if (response.data) {
         console.log('Menu API: Processed response:', response.data);
         return response.data;
-      } else {
-        console.warn('Menu API: No data in response');
-        throw new Error('No data received from server');
       }
+      
+      throw new Error('Unexpected response from server');
     } catch (error) {
       console.error('Menu API: Error deleting menu item:', {
         message: error.message,
