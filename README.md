@@ -39,15 +39,12 @@ Foodies also prioritizes security, with features like JWT-based user authenticat
 - Integration with MongoDB for data storage and retrieval.
 - User-friendly interface with Tailwind CSS for styling.
 
+## Deployment
+
+- **Frontend:** Deployed on Vercel.
+- **Backend:** Deployed on Render. Note that Render may take some time to connect, with an initial startup time ranging from 30 to 60 seconds.
+
 ## Website Images
-
-### Add New Item Form
-![Add New Item Form](Images/Add%20New%20Item%20Form.png)
-Description: A form for adding new items to the menu.
-
-### Add Restaurant
-![Add Restaurant](Images/Add%20Restaurant.png)
-Description: Interface for adding a new restaurant to the system.
 
 ### All Restaurants
 ![All restaurants](Images/All%20restaurants.png)
@@ -109,10 +106,6 @@ Description: Page displaying details of a specific restaurant.
 ![Restaurant Profile](Images/Restaurant%20Profile.png)
 Description: Profile page for a restaurant.
 
-### Update Item
-![Update Item](Images/Update%20Item.png)
-Description: Interface for updating menu items.
-
 ### Home Page
 ![Home Page](Images/home%20page.png)
 Description: The main landing page of the website.
@@ -120,6 +113,15 @@ Description: The main landing page of the website.
 ### Login
 ![Login](Images/login.png)
 Description: User login page.
+
+### Add New Item Form
+![Add New Item Form](Images/Add%20New%20Item%20Form.png)
+
+### Add Restaurant
+![Add Restaurant](Images/Add%20Restaurant.png)
+
+### Update Item
+![Update Item](Images/Update%20Item.png)
 
 ## Installation
 
