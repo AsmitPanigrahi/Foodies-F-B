@@ -40,8 +40,8 @@ Foodies also prioritizes security, with features like JWT-based user authenticat
 
 ## Presentation Files
 
-- **Foodies-Food-Delivery.pptx**: A PowerPoint presentation detailing the food delivery service.
-- **Foodies.docx**: A document providing additional information about the food delivery service.
+- [Foodies-Food-Delivery.pptx](Presentation/Foodies-Food-Delivery.pptx): A PowerPoint presentation detailing the food delivery service.
+- [Foodies.docx](Presentation/Foodies.docx): A document providing additional information about the food delivery service.
 
 ## Website Images
 
