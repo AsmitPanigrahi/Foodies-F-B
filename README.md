@@ -38,6 +38,11 @@ Foodies also prioritizes security, with features like JWT-based user authenticat
 - **Frontend:** Deployed on Vercel.
 - **Backend:** Deployed on Render. Note that Render may take some time to connect, with an initial startup time ranging from 30 to 60 seconds.
 
+## Presentation Files
+
+- **Foodies-Food-Delivery.pptx**: A PowerPoint presentation detailing the food delivery service.
+- **Foodies.docx**: A document providing additional information about the food delivery service.
+
 ## Website Images
 
 ### All Restaurants
